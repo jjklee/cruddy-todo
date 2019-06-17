@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const sprintf = require('sprintf-js').sprintf;
 
-var counter = 0;
+// var counter = 0;
 
 // Private helper functions ////////////////////////////////////////////////////
 
@@ -43,7 +43,7 @@ exports.getNextUniqueId = (callback) => {
     id++;
     writeCounter(id, (err, counterString) => {
       callback(null, counterString);
-    })
+    });
   });
 };
 
