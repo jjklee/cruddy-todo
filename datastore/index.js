@@ -9,7 +9,7 @@ const counter = require('./counter');
 
 exports.create = (text, callback) => {
   counter.getNextUniqueId((err, id) => {
-    var fileName =  path.join(exports.dataDir, id + '.txt');
+    var fileName = path.join(exports.dataDir, id + '.txt');
     fs.writeFile(fileName, text, (err) => {
       if (err) {
         throw ('error creating file');
@@ -38,39 +38,46 @@ exports.readAll = (callback) => {
       // })
       callback(null, files);
     }
-  })
+  });
 };
 
 exports.readOne = (id, callback) => {
-  // var text = items[id];
-  let filename = path.join(exports.dataDir, id + '.txt')
+  let filename = path.join(exports.dataDir, id + '.txt');
   fs.readFile(filename, 'utf8', (err, text) => {
-  if (err) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }})
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      callback(null, { id, text });
+    }
+  });
 };
 
 exports.update = (id, text, callback) => {
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
+  let filename = path.join(exports.dataDir, id + '.txt');
+  fs.readFile(filename, 'utf8', (err) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      fs.writeFile(filename, text, 'utf8', (err) => {
+        if (err) {
+          throw ('error writing to file');
+        } else {
+          callback(null, { id, text });
+        }
+      });
+    }
+  });
 };
 
 exports.delete = (id, callback) => {
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
-  }
+  let filename = path.join(exports.dataDir, id + '.txt');
+  fs.unlink(filename, (err) => {
+    if (err) {
+      throw ('error delete file');
+    } else {
+      callback();
+    }
+  });
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
